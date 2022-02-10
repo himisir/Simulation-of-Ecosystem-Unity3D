@@ -6,25 +6,27 @@ public class Food : MonoBehaviour
 {
 
     [Range(0f, 100f)]
-    public float steps, range, rayDistance;
+    public float steps, range, offset, rayDistance;
+    public int seed;
     public bool targetReached;
-    Vector3 targetPos;
+    Vector3 targetPos, randomPos;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        targetPos = RandomPosition();
     }
 
     void Update()
     {
+        
 
-        Vector3 pos;
+
         if (targetReached)
         {
             targetReached = false;
-            pos = RandomPosition();
-            targetPos = pos;
+            randomPos = RandomPosition();
+            targetPos = randomPos;
         }
 
         Move(targetPos);
@@ -32,14 +34,14 @@ public class Food : MonoBehaviour
 
     Vector3 RandomPosition()
     {
-        Vector3 newPosition = new Vector3(Random.Range(-range, range), transform.position.y, Random.Range(-range, range));
 
-        if (!Physics.Raycast(newPosition, Vector3.down, rayDistance))
-        {
-            newPosition = RandomPosition();
-
-        }
-        return newPosition;
+        Vector3 pos;
+        float x = Random.Range(-range + Time.deltaTime * offset, range + Time.deltaTime * offset);
+        float z = Random.Range(-range + Time.deltaTime * offset, range + Time.deltaTime * offset);
+        float y = transform.position.y;
+        pos = new Vector3(x, y, z);
+        if (!Physics.Raycast(pos, Vector3.down, rayDistance)) pos = RandomPosition();
+        return pos;
     }
     void Move(Vector3 target)
     {

@@ -109,9 +109,10 @@ GameObject:
   - component: {fileID: 2155282779153592492}
   - component: {fileID: 2155282779153592493}
   - component: {fileID: 2155282779153592494}
-  - component: {fileID: 2155282779153592491}
   - component: {fileID: 2155282779153592490}
   - component: {fileID: 2155282779153592489}
+  - component: {fileID: 2155282779153592491}
+  - component: {fileID: 2155282778449228417}
   m_Layer: 0
   m_Name: Creature
   m_TagString: Untagged
@@ -126,14 +127,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2155282779153592496}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2155282779137226760}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2155282779153592492
 MeshFilter:
@@ -198,28 +199,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2155282779153592491
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2155282779153592496}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de0806709a0de778bbcb82fdf0164a8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 2.1
-  rotationSpeed: 5
-  rayDistance: 10
-  steps: 1
-  visionRange: 7.8
-  visionRadius: 70
-  range: 12.9
-  foodInReach: 0
-  targetReached: 0
-  foodReached: 0
 --- !u!54 &2155282779153592490
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -249,3 +228,62 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2155282779153592491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2155282779153592496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de0806709a0de778bbcb82fdf0164a8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+  rotationSpeed: 5
+  rayDistance: 10
+  steps: 1
+  visionRange: 7.8
+  visionRadius: 70
+  foodConsumed: 0
+  range: 10
+  foodInReach: 0
+  targetReached: 0
+  foodReached: 0
+  lastKnownPosition: 0
+  creature: {fileID: 2155282779153592495}
+  reproductionScript: {fileID: 2155282778449228417}
+--- !u!114 &2155282778449228417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2155282779153592496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1cb81687fb6b862fa5dc3eebf6b296c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  creature: {fileID: 2155282779153592495}
+  basicMovementScript: {fileID: 2155282779153592491}
+  animalHealth: 100
+  animalHealthMax: 100
+  lifeFactor: 1
+  hungerThreshold: 30
+  foodConsumed: 0
+  numberOfFoodConsumed: 0
+  energyFromFood: 0
+  energyPerFood: 10
+  foodEaten: 0
+  gaveBirth: 0
+  initialize: 0
+  pregnancyPeriod: 1
+  healthPregnancyThreshold: 70
+  foodPregnancyThreshold: 4
+  healthAfterPregnancy: 40
+  offsringTimesCount: 0
+  maxNumberOfOffspringsBeforeDeath: 3
+  maxNumberOfBabiesItCanGiveBirthAtOnce: 3
+  minNumberOfBabiesItCanGiveBirthAtOnce: 1

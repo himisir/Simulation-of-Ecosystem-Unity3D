@@ -130,7 +130,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   steps: 0.3
   range: 30
+  offset: 5
   rayDistance: 10
+  seed: 42
   targetReached: 0
 --- !u!135 &1433567853802636452
 SphereCollider:

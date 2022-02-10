@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,16 +18,37 @@ public class BasicMovement : MonoBehaviour
     [Range(0f, 100f)]
     public float visionRange;
     public float visionRadius;
+
+    [Range(50f, 100f)]
+    public float foodConsumed;
+
+
+
     [Range(0f, 100f)]
     public float range;
-    public bool foodInReach, targetReached, foodReached;
+    public bool foodInReach, targetReached, foodReached, lastKnownPosition;
 
+
+    public Transform creature;
+    public Reproduction reproductionScript;
+
+
+
+    void Sense()
+    {
+        //Priority Low
+        //Will detect food but won't get exacts location of it. 
+        //How it works is, Another collider to check if food is present in the system then resister it's location and then go after it.
+        //Location wil be actualPosition + offset;
+        //Vector3 offset = new Vector3(Random.Range(-offsetRange, offsetRange), Random.Range(-offsetRange, offsetRange),Random.Range(-offsetRange, offsetRange))
+        //offset will be overridden by foodPostion once foodIsfound 
+    }
 
     //Set foodPosition Value to zero at awake;
     void Start()
     {
         senseBound = GetComponent<SphereCollider>();
-
+        reproductionScript = creature.GetComponent<Reproduction>();
     }
 
     //Check for food; 
@@ -38,28 +60,53 @@ public class BasicMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-
+        OnDraw();
         SetRadius();
-        if (foodInReach)
+        float animalHealth = reproductionScript.animalHealth;
+        float hungerThreshold = reproductionScript.hungerThreshold;
+
+        bool flag = true;//To check if it is hungry or not;
+
+        /*
+
+                if (animalHealth > hungerThreshold)
+                {
+                    flag = (((Random.Range(4, 10)) / 10f) * 100 > 70); //Convert this hardcode to variables; 
+                }
+        */
+
+
+        if (flag)
         {
-            targetPosition = foodPosition;
-        }
-        else
-        {
-            if (targetReached || foodReached)
+            if (foodInReach || lastKnownPosition)
             {
-                targetPosition = RandomPosition();
-                targetReached = false;
-                foodReached = false;
+
+
+                targetPosition = foodPosition;
+                lastKnownPosition = false;
+                foodInReach = false;
+
             }
+            else
+            {
+                if (targetReached || foodReached)
+                {
+
+                    targetPosition = RandomPosition();
+                    if (targetReached) targetReached = false;
+                    if (foodReached) foodReached = false;
+                }
+            }
+            //Debug.Log("Food Found at: " + targetPosition + "Inside vision Range: " + Vector3.Distance(transform.position, targetPosition));
+            Move(targetPosition);
         }
-        Debug.Log("Food Found at: " + targetPosition + "Inside vision Range: " + Vector3.Distance(transform.position, targetPosition));
-        Move(targetPosition);
+
+
 
     }
 
 
-
+    //Use two(left and right Angle) raycast inside of OnTriggerStay to check enter and exit from Fov
     private void OnTriggerEnter(Collider other)
     {
 
@@ -70,7 +117,7 @@ public class BasicMovement : MonoBehaviour
 
             if (hitAngle <= visionRadius / 2.0f)
             {
-                if (Vector3.Distance(transform.position, hitPosition) < visionRange)
+                if (Vector3.Distance(transform.position, hitPosition) <= visionRange)
                 {
                     foodPosition = hitPosition;
                     foodInReach = true;
@@ -78,12 +125,6 @@ public class BasicMovement : MonoBehaviour
             }
 
         }
-
-        if (foodReached)
-        {
-            foodInReach = false;
-        }
-
 
     }
 
@@ -97,7 +138,7 @@ public class BasicMovement : MonoBehaviour
 
             if (hitAngle <= visionRadius / 2.0f)
             {
-                if (Vector3.Distance(transform.position, hitPosition) < visionRange)
+                if (Vector3.Distance(transform.position, hitPosition) <= visionRange)
                 {
                     foodPosition = hitPosition;
                     foodInReach = true;
@@ -106,11 +147,34 @@ public class BasicMovement : MonoBehaviour
 
         }
 
-        if (foodReached)
-        {
-            foodInReach = false;
-        }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+
+        if (other.CompareTag("Food"))
+        {
+            Vector3 hitPosition = other.transform.position;
+
+            float hitAngle = Vector3.Angle(transform.forward, hitPosition);
+
+            if (hitAngle <= visionRadius / 2.0f)
+            {
+                if (Vector3.Distance(transform.position, hitPosition) <= visionRange)
+                {
+                    foodPosition = hitPosition;
+                    {
+                        lastKnownPosition = true;
+                        targetReached = true;
+                        foodInReach = false;
+                    }
+                }
+            }
+
+        }
+
+    }
+
 
     private void OnCollisionEnter(Collision other)
     {
@@ -118,6 +182,7 @@ public class BasicMovement : MonoBehaviour
         {
             Debug.Log("Food has been consumed");
             foodReached = true;
+            foodInReach = false;
             Destroy(other.gameObject);
         }
     }
@@ -126,13 +191,19 @@ public class BasicMovement : MonoBehaviour
     {
         Vector3 targetPos = new Vector3(target.x, transform.position.y, target.z);
 
-        transform.position = Vector3.Lerp(transform.position, targetPos, steps * Time.deltaTime);
-        transform.LookAt(Vector3.Lerp(transform.position, targetPos, steps));
-        Debug.Log(transform.position + " " + targetPos + " " + Vector3.Distance(targetPos, transform.position));
-        if (Vector3.Distance(targetPos, transform.position) < 1f) targetReached = true;
-
+        //transform.position = Vector3.Lerp(transform.position, targetPos, steps * Time.deltaTime);
+        transform.LookAt(Vector3.Lerp(transform.position, targetPos, rotationSpeed * Time.deltaTime));
         //Lerp with MoveTowards
-        // transform.position = Vector3.MoveTowards(transform.position, Vector3.Lerp(transform.position, foodPosition, steps*Time.deltaTime), moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, Vector3.Lerp(transform.position, targetPos, steps * Time.deltaTime), moveSpeed * Time.deltaTime);
+        //transform.LookAt(Vector3.Lerp(transform.position, targetPos, rotationSpeed * Time.deltaTime));
+
+        //Debug.Log(transform.position + " " + targetPos + " " + Vector3.Distance(targetPos, transform.position));
+        if (Vector3.Distance(targetPos, transform.position) < 1f)
+        {
+            targetReached = true;
+            //foodInReach = false;
+        }
+
 
     }
     Vector3 RandomPosition()
@@ -145,16 +216,16 @@ public class BasicMovement : MonoBehaviour
     }
 
 
-    void OnDrawGizmosSelected()
+    void OnDraw()
     {
-        float totalFOV = visionRadius;
+        float totalFoV = visionRadius;
         float rayRange = visionRange;
-        float halfFOV = totalFOV / 2.0f;
-        Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
-        Quaternion rightRayRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
+        float halfFoV = totalFoV / 2.0f;
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFoV, Vector3.up);
+        Quaternion rightRayRotation = Quaternion.AngleAxis(halfFoV, Vector3.up);
         Vector3 leftRayDirection = leftRayRotation * transform.forward;
         Vector3 rightRayDirection = rightRayRotation * transform.forward;
-        Gizmos.DrawRay(transform.position, leftRayDirection * rayRange);
-        Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
+        Debug.DrawRay(transform.position, leftRayDirection * rayRange);
+        Debug.DrawRay(transform.position, rightRayDirection * rayRange);
     }
 }
