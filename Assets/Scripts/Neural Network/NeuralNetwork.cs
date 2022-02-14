@@ -1,7 +1,8 @@
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class NeuralNetwork : IComparable<NeuralNetwork>
 {
@@ -30,7 +31,7 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
         {
             neuronsList.Add(new float[layers[i]]);
         }
-        neurons = neuronList.ToArray();
+        neurons = neuronsList.ToArray();
 
     }
     void InitWeights()
@@ -40,12 +41,12 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
         {
             List<float[]> layerWeightsList = new List<float[]>();
             int neuronsInPreviousLayer = layers[i - 1];
-            for (j = 0; j < neurons[i].Length; j++)
+            for (int j = 0; j < neurons[i].Length; j++)
             {
                 float[] neuronsWeights = new float[neuronsInPreviousLayer];
                 for (int k = 0; k < neuronsInPreviousLayer; k++)
                 {
-                    neuronsWeights[k] = (float)Random.Range(-0.5f, 0.5f);
+                    neuronsWeights[k] = (float)UnityEngine.Random.Range(-0.5f, 0.5f);
                 }
                 layerWeightsList.Add(neuronsWeights);
 
@@ -94,10 +95,10 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
         {
             for (int j = 0; j < weights[i].Length; j++)
             {
-                for (int k = 0; k < weights[i][j].Length; k)
+                for (int k = 0; k < weights[i][j].Length; k++)
                 {
                     float weight = weights[i][j][k];
-                    float randomNumber = (float)Random(0, 10);
+                    float randomNumber = (float)UnityEngine.Random.Range(0, 10);
 
                     if (randomNumber <= 2.5f)
                     {
@@ -105,17 +106,17 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
                     }
                     if (randomNumber >= 5f)
                     {
-                        weight = Random.Range(-0.5f, 0.5f);
+                        weight = UnityEngine.Random.Range(-0.5f, 0.5f);
 
                     }
                     if (randomNumber >= 7f)
                     {
-                        float factor = Random.Range(0, 1f);
+                        float factor = UnityEngine.Random.Range(0, 1f);
                         weight *= factor;
                     }
                     if (randomNumber >= 8.5f)
                     {
-                        float factor = Random.Range(0, .7f);
+                        float factor = UnityEngine.Random.Range(0, .7f);
                         weight *= factor;
                     }
                     weights[i][j][k] = weight;
@@ -124,7 +125,7 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
         }
     }
 
-    pulbic NeuralNetwork(NeuralNetwork copyNetwork)
+    public NeuralNetwork(NeuralNetwork copyNetwork)
     {
         this.layers = new int[copyNetwork.layers.Length];
 
@@ -140,9 +141,9 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
     {
         for (int i = 0; i < weights.Length; i++)
         {
-            for (int j = 0; j < weights[i]; j++)
+            for (int j = 0; j < weights[i].Length; j++)
             {
-                for (int k = 0; k < weights[i][j]; k++)
+                for (int k = 0; k < weights[i][j].Length; k++)
                 {
                     weights[i][j][k] = copyWeights[i][j][k];
                 }
@@ -168,11 +169,9 @@ public class NeuralNetwork : IComparable<NeuralNetwork>
     public int CompareTo(NeuralNetwork other)
     {
         if (other == null) return 1;
-        if (finess > other.fitness) return 1;
+        if (fitness > other.fitness) return 1;
         else if (fitness < other.fitness) return -1;
         else return 0;
     }
-
-
 
 }
