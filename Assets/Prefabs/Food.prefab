@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   steps: 0.3
-  range: 30
+  range: 100
   offset: 5
   rayDistance: 10
   seed: 42

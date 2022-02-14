@@ -241,13 +241,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  rotationSpeed: 5
+  rotationSpeed: 1
   rayDistance: 10
-  steps: 1
-  visionRange: 7.8
-  visionRadius: 70
+  steps: 4
+  visionRange: 10
+  visionRadius: 90
   foodConsumed: 0
-  range: 10
+  range: 52
   foodInReach: 0
   targetReached: 0
   foodReached: 0
@@ -275,15 +275,15 @@ MonoBehaviour:
   foodConsumed: 0
   numberOfFoodConsumed: 0
   energyFromFood: 0
-  energyPerFood: 10
+  energyPerFood: 7
   foodEaten: 0
   gaveBirth: 0
   initialize: 0
   pregnancyPeriod: 1
-  healthPregnancyThreshold: 70
+  healthPregnancyThreshold: 65
   foodPregnancyThreshold: 4
   healthAfterPregnancy: 40
   offsringTimesCount: 0
-  maxNumberOfOffspringsBeforeDeath: 3
+  maxNumberOfOffspringsBeforeDeath: 4
   maxNumberOfBabiesItCanGiveBirthAtOnce: 3
   minNumberOfBabiesItCanGiveBirthAtOnce: 1
